@@ -1,13 +1,24 @@
 {
   "name": "reactive-ecs",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "rm -rf ./dist/cjs && npx tsc -p tsconfig.build.json"
   },
   "author": "Justin Cotarla",
   "license": "BSD-3-Clause",
-  "description": "",
+  "description": "A reactive ECS framework for the browser",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/cjs/index.d.ts"
+    }
+  },
   "lint-staged": {
     "./src/**/*.ts": [
       "jest --findRelatedTests --passWithNoTests",

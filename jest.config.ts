@@ -8,6 +8,7 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   prettierPath: null,
+  testPathIgnorePatterns: ['dist'],
 }
 
 export default config

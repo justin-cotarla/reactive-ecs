@@ -1,4 +1,6 @@
-node_modules/
+dist/cjs/
 coverage/
+node_modules/
 
 tsconfig.tsbuildinfo
+*.tgz
