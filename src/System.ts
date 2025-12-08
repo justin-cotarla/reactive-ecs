@@ -13,7 +13,7 @@ export class System {
   >()
 
   constructor(components: Component<unknown>[]) {
-    components.forEach(this.registerComponent)
+    components.forEach(this.registerComponent.bind(this))
   }
 
   destroy() {
@@ -50,12 +50,16 @@ export class System {
         return
       }
 
-      this.collectedEntitySignalCounts.set(
-        event.entityId,
-        entitySignalCount - 1
-      )
+      const newSignalCount = entitySignalCount - 1
 
-      this._matchedEntityCount -= 1
+      this.collectedEntitySignalCounts.set(event.entityId, newSignalCount)
+
+      if (
+        entitySignalCount === this.registeredComponents.size &&
+        newSignalCount < this.registeredComponents.size
+      ) {
+        this._matchedEntityCount -= 1
+      }
     }
 
     this.registeredComponents.set(component, {
