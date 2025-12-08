@@ -7,7 +7,6 @@ const config: Config = {
   coverageProvider: 'v8',
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  collectCoverageFrom: ['src/math/**/*.ts'],
   prettierPath: null,
 }
 
