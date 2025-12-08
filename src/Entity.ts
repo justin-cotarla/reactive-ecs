@@ -1,21 +1,18 @@
-import { Component } from './Component'
-import { DefaultComponent } from './DefaultComponent'
+import { Component, ComponentData } from './Component'
 
 export class Entity {
   constructor(readonly id: number) {}
 
-  addComponent<T extends never>(component: Component<T>): void
-  addComponent<T, V extends T>(component: Component<T>, value: V): void
-  addComponent<T, V extends T>(component: DefaultComponent<T>, value?: V): void
-  addComponent<T, V extends T, C extends DefaultComponent<T> | Component<T>>(
-    component: C,
-    ...[value]: C extends Component<T> ? [value: V] : [value?: V]
+  addComponent<T, C extends Component<T>>(
+    ...[component, value]: [T] extends [never]
+      ? [component: Component<T>]
+      : [component: Component<T>, value: ComponentData<C>]
   ): void {
-    component.addToEntity(this.id, value)
-  }
-
-  updateComponent<T>(component: Component<T>, value: T) {
-    component.updateEntityData(this.id, value)
+    if (value != null) {
+      ;(component as Component<unknown>).addToEntity(this.id, value)
+      return
+    }
+    component.addToEntity(this.id)
   }
 
   removeComponent(component: Component<unknown>) {

@@ -1,29 +1,7 @@
 import { Entity } from './Entity'
 import { TypedEventTarget } from './TypedEventTarget'
 
-export type ComponentData<T> = T extends Component<infer G> ? G & {} : never
-
-export class ComponentAddEvent extends Event {
-  static readonly type = 'componentadd'
-
-  constructor(
-    readonly name: string,
-    readonly entityId: number
-  ) {
-    super(ComponentAddEvent.type)
-  }
-}
-
-export class ComponentRemoveEvent extends Event {
-  static readonly type = 'componentremove'
-
-  constructor(
-    readonly name: string,
-    readonly entityId: number
-  ) {
-    super(ComponentRemoveEvent.type)
-  }
-}
+export type ComponentData<T> = T extends Component<infer G> ? G : never
 
 export class Component<T = never> extends (EventTarget as TypedEventTarget<{
   [ComponentAddEvent.type]: ComponentAddEvent
@@ -35,35 +13,25 @@ export class Component<T = never> extends (EventTarget as TypedEventTarget<{
     super()
   }
 
-  addToEntity(entityId: number, value: T): void {
+  addToEntity(
+    ...[entityId, value]: [T] extends [never]
+      ? [entityId: number]
+      : [entityId: number, value: T]
+  ): void {
     if (this.entityData[entityId] == null) {
       this.dispatchEvent(new ComponentAddEvent(this.name, entityId))
     }
 
-    this.entityData[entityId] = value
-  }
-
-  updateEntityData(entityId: number, value: T): void {
-    if (this.entityData[entityId] == null) {
-      throw new Error(
-        `Entity ${entityId} does not have a ${this.name} component`
-      )
+    if (value == null) {
+      return
     }
 
     this.entityData[entityId] = value
-    console.log(`Updated ${this.name} component data in entity#${entityId}`)
   }
 
   removeFromEntity(entityId: number): void {
-    if (this.entityData[entityId] == null) {
-      throw new Error(
-        `Entity ${entityId} does not have a ${this.name} component`
-      )
-    }
-
     delete this.entityData[entityId]
     this.dispatchEvent(new ComponentRemoveEvent(this.name, entityId))
-    console.log(`Removed ${this.name} component from entity#${entityId}`)
   }
 
   getEntityData(entity: Entity): T
@@ -89,10 +57,26 @@ export class Component<T = never> extends (EventTarget as TypedEventTarget<{
 
     return entityId in this.entityData
   }
+}
 
-  printAll(): void {
-    this.entityData.forEach((data, index) => {
-      console.log({ entity: index, data: `${data}` })
-    })
+export class ComponentAddEvent extends Event {
+  static readonly type = 'componentadd'
+
+  constructor(
+    readonly name: string,
+    readonly entityId: number
+  ) {
+    super(ComponentAddEvent.type)
+  }
+}
+
+export class ComponentRemoveEvent extends Event {
+  static readonly type = 'componentremove'
+
+  constructor(
+    readonly name: string,
+    readonly entityId: number
+  ) {
+    super(ComponentRemoveEvent.type)
   }
 }
