@@ -10,7 +10,10 @@
   "description": "A reactive ECS framework for the browser",
   "files": [
     "src",
-    "dist"
+    "!src/**/*.test.ts",
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
