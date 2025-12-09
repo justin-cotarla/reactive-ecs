@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "prepare": "husky",
+    "test": "npx jest",
     "build": "rm -rf ./dist/cjs && npx tsc -p tsconfig.build.json"
   },
   "author": "Justin Cotarla",
